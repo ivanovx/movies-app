@@ -19,18 +19,18 @@ export default function Search() {
     }, [])
 
     const onClickSearch = (e) => {
-        const sampleQuery = {
+        const query = {
             "query": {
                 "match": {
-                    "title": "Jedi"
+                    "title": "Last Jedi"
                 }
             }
-        };
-
-        axios.get(`${config.ELASTIC_HOST}/movies/_search`, {
-            data: JSON.stringify(sampleQuery),
+        }
+        
+        axios.post(`${config.ELASTIC_HOST}/movies/_search`, query, {
             headers: {
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
         }).then(res => {
            console.log(res);
