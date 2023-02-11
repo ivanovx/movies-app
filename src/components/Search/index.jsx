@@ -46,11 +46,14 @@ export default function Search() {
     const onClickSearch = (e) => {
         const query = {
             "query": {
-                "match": {
-                    "title": searchValue
+                "multi_match": {
+                    "query": searchValue,
+                    "type":       "cross_fields",
+                    'fields': fields,
+                    'operator': 'and'
                 }
             },
-            "size": 75
+            "size": 100
         }
         
         axios.post(`${config.ELASTIC_HOST}/movies/_search`, query, {
