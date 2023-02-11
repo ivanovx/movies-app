@@ -1,15 +1,12 @@
-import logo from './logo.svg';
-import './App.css';
-
-import Layout from "./components/Layout";
+import ElasticProvider from "./components/Elastic";
 import Search from './components/Search';
 
-function App() {
-  return (
-    <Layout>
-      <Search />
-    </Layout>
-  );
+export default function App() {
+    return (
+        <div className="container">
+            <ElasticProvider>
+                <Search />
+            </ElasticProvider>
+        </div>
+    );
 }
-
-export default App;
