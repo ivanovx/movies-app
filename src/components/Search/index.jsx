@@ -4,7 +4,7 @@ import config from "../../config";
 
 import { useElastic } from "../Elastic";
 
-export default function Search() {
+export default function Search({ indexName, availableFields }) {
     const [count, setCount] = React.useState(0);
     const [fields, setFiels] = React.useState([]);
     const [searchValue, setSearchValue] = React.useState(null);
@@ -12,8 +12,10 @@ export default function Search() {
 
     const { token } = useElastic();
 
+    const API_PATH=`${config.ELASTIC_HOST}/${indexName}`
+
     React.useEffect(() => {
-        axios.get(`${config.ELASTIC_HOST}/movies/_count`, {
+        axios.get(`${API_PATH}/_count`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -39,8 +41,36 @@ export default function Search() {
 
     const onChangeTextInput = (e) => {
         const { value } = e.target;
-
+        
         setSearchValue(value);
+
+       
+            const query = {
+                "query" : {
+                    "match": {
+                      "title": value
+                    }
+                  },
+                  "suggest" : {
+                    "title-suggestion" : {
+                      "text" : value,
+                      "term" : {
+                        "field" : "title"
+                      }
+                    }
+                  }
+            }
+            
+            axios.post(`${API_PATH}/_search`, query, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }).then(res => {
+               console.log(res);
+            }).catch(err => {
+                console.log(err);
+            });
+
     };
 
     const onClickSearch = (e) => {
@@ -56,7 +86,7 @@ export default function Search() {
             "size": 100
         }
         
-        axios.post(`${config.ELASTIC_HOST}/movies/_search`, query, {
+        axios.post(`${API_PATH}/_search`, query, {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
@@ -86,20 +116,12 @@ export default function Search() {
                     <input type="text" className="form-control" id="searchMovieBox" placeholder="Search movie by criteria" onChange={onChangeTextInput} />
                 </div>
 
-                <div className="form-check">
-                    <input className="form-check-input" type="checkbox" name="title" id="title" onChange={onChangeField} />
-                    <label className="form-check-label" htmlFor="title">Title</label>
-                </div>
-
-                <div className="form-check">
-                    <input className="form-check-input" type="checkbox" name="actors" id="actors" onChange={onChangeField} />
-                    <label className="form-check-label" htmlFor="actors">Actors</label>
-                </div>
-
-                <div className="form-check">
-                    <input className="form-check-input" type="checkbox" name="characters" id="characters" onChange={onChangeField} />
-                    <label className="form-check-label" htmlFor="characters">Characters</label>
-                </div>
+                {availableFields.map(fieldName => (
+                    <div className="form-check" key={fieldName}>
+                        <input className="form-check-input" type="checkbox" name={fieldName} id={fieldName} onChange={onChangeField} />
+                        <label className="form-check-label" htmlFor={fieldName}>{fieldName}</label>
+                    </div>
+                ))}
 
                 <button className="btn btn-secondary" onClick={onClickSearch}>Search</button>
             </div>
