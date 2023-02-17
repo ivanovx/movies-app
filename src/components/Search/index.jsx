@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
-import config from "../../config";
 
+import config from "../../config";
 import { useElastic } from "../Elastic";
 
 export default function Search({ indexName, availableFields }) {
@@ -46,11 +46,6 @@ export default function Search({ indexName, availableFields }) {
 
        
             const query = {
-                "query" : {
-                    "match": {
-                      "title": value
-                    }
-                  },
                   "suggest" : {
                     "title-suggestion" : {
                       "text" : value,
