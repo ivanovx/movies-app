@@ -33,8 +33,7 @@ const BgMovies = () => {
     const indexName = 'bgmovies';
     const availableFields = [
         'title',
-        'actors',
-        'characters'
+        'actors'
     ];
 
     return <Search indexName={indexName} availableFields={availableFields} />

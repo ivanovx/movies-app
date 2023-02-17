@@ -46,6 +46,11 @@ export default function Search({ indexName, availableFields }) {
 
        
             const query = {
+                "query": {
+                    "match": {
+                        "title": value
+                    }
+                },
                   "suggest" : {
                     "title-suggestion" : {
                       "text" : value,
@@ -73,7 +78,7 @@ export default function Search({ indexName, availableFields }) {
             "query": {
                 "multi_match": {
                     "query": searchValue,
-                    "type":       "cross_fields",
+                    "type":  "cross_fields",
                     'fields': fields,
                     'operator': 'and'
                 }
@@ -123,12 +128,25 @@ export default function Search({ indexName, availableFields }) {
             <div className="searchResults">
                 {searchResults.map(searchResult => {
                     return (
+                        <>
                         <div className="card" key={searchResult._source.title}>
                             <div className="card-body">
-                                <h5 className="card-title">{searchResult._source.title}</h5>
-                                <p className="card-text">{searchResult._source.overview}</p>
+                                <h5 className="card-title">
+                                    {searchResult._source.title} {" "}
+                                    <span className="badge bg-secondary">{searchResult._score}</span>
+                                </h5>
+                                <p>
+                                    {searchResult._source.genres && searchResult._source.genres.map(genre => <span className="badge bg-secondary" key={genre}>{genre}</span>)} 
+                                </p>
+                                {searchResult._source.overview && <p className="card-text">{searchResult._source.overview}</p>}
+                                {searchResult._source.description && <p className="card-text">{searchResult._source.description}</p>}
+                                <hr />
+                                <p> <strong>Actors: </strong> {searchResult._source.actors && searchResult._source.actors.map(actor => <span key={actor}>{actor}, </span>)} </p>
+                                <p> <strong>Characters: </strong> {searchResult._source.characters && searchResult._source.characters.map(actor => <span key={actor}>{actor}, </span>)} </p>
                             </div>
-                      </div>                        
+                      </div>
+                      <br />
+                      </>                       
                     );
                 })}
             </div>
