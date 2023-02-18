@@ -1,12 +1,20 @@
 const store = {
-    get(key: string, defaultValue: any = undefined) {
-        const value = window.localStorage.getItem(key);
+    get(key: string, defaultValue: any) {
+        const value = window.sessionStorage.getItem(key);
 
         return value ? value : defaultValue;
     },
     set(key: string, value: any) {
-        window.localStorage.setItem(key, value);
+        window.sessionStorage.setItem(key, value);
     }
 };
 
-export default store;
+export default function useSorage(name: string) {
+    const get = () => window.sessionStorage.getItem(name);
+    const set = (value: string | null) => window.sessionStorage.setItem(name, value);
+
+    return { 
+        get,
+        set,
+    };
+}

@@ -2,7 +2,8 @@ import React from "react";
 import axios from "axios";
 
 import { ELASTIC_HOST, ELASTIC_USER, ELASTIC_PASSWORD } from '../../config';
-import store from '../../hooks/store';
+
+import useSorage from "../../hooks/store";
 
 export const ElasticContext = React.createContext({
     token: null
@@ -15,17 +16,19 @@ type Props = {
 }
 
 export default function ElasticProvider({ children }: Props) {
-    const [token, setToken] = React.useState(store.get('token', null));
+    const storage = useSorage('token');
+
+    const [token, setToken] = React.useState<string | null>(storage.get());
 
     React.useEffect(() => {
-        const controller = new AbortController();
+        const abortController = new AbortController();
         
         axios.post(`${ELASTIC_HOST}/_security/oauth2/token`, {
             "grant_type" : "password",
             "username" : ELASTIC_USER,
             "password" : ELASTIC_PASSWORD
           }, {
-            signal: controller.signal,
+            signal: abortController.signal,
             auth: {
                 username: ELASTIC_USER,
                 password: ELASTIC_PASSWORD
@@ -37,11 +40,11 @@ export default function ElasticProvider({ children }: Props) {
             console.log(err);
         });
 
-        return () => controller.abort();
+        return () => abortController.abort();
     }, []);
 
     React.useEffect(() => {
-        store.set('token', token);
+        storage.set(token);
     }, [token]);
 
     return <ElasticContext.Provider value={{token}}>{children}</ElasticContext.Provider>;
