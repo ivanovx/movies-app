@@ -1,10 +1,10 @@
 const store = {
-    get(key, defaultValue = undefined) {
+    get(key: string, defaultValue: any = undefined) {
         const value = window.localStorage.getItem(key);
 
         return value ? value : defaultValue;
     },
-    set(key, value) {
+    set(key: string, value: any) {
         window.localStorage.setItem(key, value);
     }
 };

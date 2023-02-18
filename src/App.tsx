@@ -4,7 +4,6 @@ import { createBrowserRouter, Link, RouterProvider } from "react-router-dom";
 import ElasticProvider from "./components/Elastic";
 import Search from './components/Search';
 
-
 const Home = () => (
     <ul className="nav justify-content-center">
         <li className="nav-item">
@@ -40,7 +39,6 @@ const BgMovies = () => {
     return <Search indexName={indexName} availableFields={availableFields} />
 };
 
-
 const router = createBrowserRouter([
     {
         path: '/',
@@ -57,8 +55,6 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-
-
     return (
         <div className="container">
             <ElasticProvider>

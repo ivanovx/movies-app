@@ -4,29 +4,34 @@ import axios from "axios";
 import config from "../../config";
 import { useElastic } from "../Elastic";
 
-export default function Search({ indexName, availableFields }) {
-    const [count, setCount] = React.useState(0);
-    const [fields, setFiels] = React.useState([]);
-    const [searchValue, setSearchValue] = React.useState(null);
-    const [searchResults, setSearchResults] = React.useState([]);
+type Props = {
+    indexName: string;
+    availableFields: string[];
+}
+
+export default function Search({ indexName, availableFields } : Props) {
+    const [count, setCount] = React.useState<number>(0);
+    const [fields, setFiels] = React.useState<string[]>([]);
+    const [searchValue, setSearchValue] = React.useState<string | null>(null);
+    const [searchResults, setSearchResults] = React.useState<any[]>([]);
 
     const { token } = useElastic();
 
-    const API_PATH=`${config.ELASTIC_HOST}/${indexName}`
+    const API_PATH=`${config.ELASTIC_HOST}/${indexName}`;
 
     React.useEffect(() => {
         axios.get(`${API_PATH}/_count`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
-        }).then(res => {
+        }).then((res: any) => {
            setCount(res.data.count)
-        }).catch(err => {
+        }).catch((err: any) => {
             console.log(err);
         });
     }, [token]);
 
-    const onChangeField = (e) => {
+    const onChangeField = (e: any) => {
         const { target: { name, checked } } = e;
     
         if (checked) {
@@ -39,7 +44,7 @@ export default function Search({ indexName, availableFields }) {
         }
     };
 
-    const onChangeTextInput = (e) => {
+    const onChangeTextInput = (e: any) => {
         const { value } = e.target;
         
         setSearchValue(value);
@@ -65,15 +70,15 @@ export default function Search({ indexName, availableFields }) {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
-            }).then(res => {
+            }).then((res: any) => {
                console.log(res);
-            }).catch(err => {
+            }).catch((err: any) => {
                 console.log(err);
             });
 
     };
 
-    const onClickSearch = (e) => {
+    const onClickSearch = (e: any) => {
         const query = {
             "query": {
                 "multi_match": {
@@ -90,10 +95,10 @@ export default function Search({ indexName, availableFields }) {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
-        }).then(res => {
+        }).then((res:any) => {
            console.log(res);
            setSearchResults(res.data.hits.hits);
-        }).catch(err => {
+        }).catch((err:any) => {
             console.log(err);
         });
     };

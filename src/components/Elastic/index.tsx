@@ -10,7 +10,11 @@ export const ElasticContext = React.createContext({
 
 export const useElastic = () => React.useContext(ElasticContext);
 
-export default function ElasticProvider({ children }) {
+type Props = {
+    children: React.ReactNode;
+}
+
+export default function ElasticProvider({ children }: Props) {
     const [token, setToken] = React.useState(store.get('token', null));
 
     React.useEffect(() => {
@@ -26,10 +30,10 @@ export default function ElasticProvider({ children }) {
                 username: config.ELASTIC_USER,
                 password: config.ELASTIC_PASSWORD
             }
-        }).then(res => {
+        }).then((res: any) => {
             const { access_token } = res.data;
             setToken(access_token);
-        }).catch(err => {
+        }).catch((err: any) => {
             console.log(err);
         });
 
