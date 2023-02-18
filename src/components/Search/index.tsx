@@ -4,6 +4,8 @@ import axios from "axios";
 import { ELASTIC_HOST } from "../../config";
 import { useElastic } from "../Elastic";
 
+import { Checkbox, FormControlLabel, FormGroup, TextField } from "@mui/material";
+
 type Props = {
     indexName: string;
     availableFields: string[];
@@ -20,7 +22,10 @@ export default function Search({ indexName, availableFields } : Props) {
     const API_PATH=`${ELASTIC_HOST}/${indexName}`;
 
     React.useEffect(() => {
+        const abortController = new AbortController();
+
         axios.get(`${API_PATH}/_count`, {
+            signal: abortController.signal,
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -29,6 +34,8 @@ export default function Search({ indexName, availableFields } : Props) {
         }).catch((err: any) => {
             console.log(err);
         });
+
+        return () => abortController.abort();
     }, [token]);
 
     const onChangeField = (e: any) => {
@@ -75,31 +82,15 @@ export default function Search({ indexName, availableFields } : Props) {
         });
     };
 
-    React.useEffect(() => {
-        console.log(fields);
-    }, [fields]);
-
-    React.useEffect(() => {
-        console.log(searchValue);
-    }, [searchValue]);
-
     return (
         <div>
             <div className="searchInput">
                 <h1>Movies <span className="badge bg-secondary">{count}</span></h1>
 
-                <div className="mb-3">
-                    <label htmlFor="searchMovieBox" className="form-label">Search movie</label>
-                    <input type="text" className="form-control" id="searchMovieBox" placeholder="Search movie by criteria" onChange={onChangeTextInput} />
-                </div>
+                <TextField fullWidth label="Search movie" variant="outlined" margin="normal" onChange={onChangeTextInput} />
 
-                {availableFields.map(fieldName => (
-                    <div className="form-check" key={fieldName}>
-                        <input className="form-check-input" type="checkbox" name={fieldName} id={fieldName} onChange={onChangeField} />
-                        <label className="form-check-label" htmlFor={fieldName}>{fieldName}</label>
-                    </div>
-                ))}
-
+                {availableFields.map(fieldName => <FormControlLabel key={fieldName} label={fieldName} control={ <Checkbox name={fieldName} onChange={onChangeField} /> }/>)} 
+                
                 <button className="btn btn-secondary" onClick={onClickSearch}>Search</button>
             </div>
             <div className="searchResults">
@@ -113,13 +104,13 @@ export default function Search({ indexName, availableFields } : Props) {
                                     <span className="badge bg-secondary">{searchResult._score}</span>
                                 </h5>
                                 <p>
-                                    {searchResult._source.genres && searchResult._source.genres.map(genre => <span className="badge bg-secondary" key={genre}>{genre}</span>)} 
+                                    {searchResult._source.genres && searchResult._source.genres.map((genre: string) => <span className="badge bg-secondary" key={genre}>{genre}</span>)} 
                                 </p>
                                 {searchResult._source.overview && <p className="card-text">{searchResult._source.overview}</p>}
                                 {searchResult._source.description && <p className="card-text">{searchResult._source.description}</p>}
                                 <hr />
-                                <p> <strong>Actors: </strong> {searchResult._source.actors && searchResult._source.actors.map(actor => <span key={actor}>{actor}, </span>)} </p>
-                                <p> <strong>Characters: </strong> {searchResult._source.characters && searchResult._source.characters.map(actor => <span key={actor}>{actor}, </span>)} </p>
+                                <p> <strong>Actors: </strong> {searchResult._source.actors && searchResult._source.actors.map((actor: string) => <span key={actor}>{actor}, </span>)} </p>
+                                <p> <strong>Characters: </strong> {searchResult._source.characters && searchResult._source.characters.map((actor: string) => <span key={actor}>{actor}, </span>)} </p>
                             </div>
                       </div>
                       <br />
