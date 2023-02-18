@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 
-import config from "../../config";
+import { ELASTIC_HOST } from "../../config";
 import { useElastic } from "../Elastic";
 
 type Props = {
@@ -17,7 +17,7 @@ export default function Search({ indexName, availableFields } : Props) {
 
     const { token } = useElastic();
 
-    const API_PATH=`${config.ELASTIC_HOST}/${indexName}`;
+    const API_PATH=`${ELASTIC_HOST}/${indexName}`;
 
     React.useEffect(() => {
         axios.get(`${API_PATH}/_count`, {
@@ -48,34 +48,6 @@ export default function Search({ indexName, availableFields } : Props) {
         const { value } = e.target;
         
         setSearchValue(value);
-
-       
-            const query = {
-                "query": {
-                    "match": {
-                        "title": value
-                    }
-                },
-                  "suggest" : {
-                    "title-suggestion" : {
-                      "text" : value,
-                      "term" : {
-                        "field" : "title"
-                      }
-                    }
-                  }
-            }
-            
-            axios.post(`${API_PATH}/_search`, query, {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            }).then((res: any) => {
-               console.log(res);
-            }).catch((err: any) => {
-                console.log(err);
-            });
-
     };
 
     const onClickSearch = (e: any) => {
