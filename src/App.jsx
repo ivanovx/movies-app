@@ -21,7 +21,8 @@ const Movies = () => {
     const availableFields = [
         'title',
         'actors',
-        'characters'
+        'characters',
+        'genres',
     ];
 
     return (
