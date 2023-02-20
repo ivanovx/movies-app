@@ -1,31 +1,29 @@
 {
   "name": "movies-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "dependencies": {
+  "dependencies": {    
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.1",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.9",
-    "@mui/material": "^5.11.9",
-    "@vitejs/plugin-react": "^3.1.0",
-    "bootstrap": "^5.2.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.8.1"
+    "@mui/material": "^5.11.9"
   },
   "devDependencies": {
+    "vite": "^4.1.0",
+    "typescript": "^4.9.3",
     "@types/axios": "^0.14.0",
     "@types/node": "^18.14.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
-    "@vitejs/plugin-react-swc": "^3.0.0",
-    "typescript": "^4.9.3",
-    "vite": "^4.1.0"
+    "@vitejs/plugin-react": "^3.1.0"   
   }
 }
